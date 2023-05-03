@@ -79,17 +79,45 @@ http(s)://hostname:port
 ##### Path parameters
  无
 ##### Query parameters (所有参数都是optional的)
-* **sno**    查找学号等于该参数的学生
-* **sname**  查找名字包含该参数的学生
-* **cid**    查找班级Id等于该参数的学生
+* **stuNo**    查找学号等于该参数的学生
+* **stuName**  查找名字包含该参数的学生
+* **classId**    查找班级Id等于该参数的学生
 * **age**    查找年龄等于该参数的学生
 * **gpa**    查找gpa大于该参数的学生
-* 未来可以继续改进的地方：加上fields投影和分页参数等
+* **startPage**    开始的页码，缺省值是1 
+* **pageSize**    每次查询返回的记录条数，缺省值为100
+* **orderBy**    排序方式，缺省按照学号（stuNo）升序排列， 目前支持的排序方式为：
+```   
+    stuNo: 按学号升序排列
+    stuNo desc: 按学号降序排列。
+    stuName：按名字升序排列
+    stuName desc：按名字降序排列
+    age: 按年龄升序排列
+    age desc: 按年龄降序排列
+    gpa: 按gpa升序排列
+    gpa desc: 按gpa序排列
+```    
+NOTE: 这个orderBy可以组合，比如  ?orderBy=gpa,stuNo desc,age
 
-比如,查询gpa大于3.0的名字中包含'张'的所有学生： 
+##### Examples:
+
+查询所有学生数据 (实际上只返回前100条数据，按学号顺序排列）：
 ```
-GET /api/v1/students?sname=张&gpa=3
+GET /api/v1/students            
 ```
+
+查询gpa大于3.0的名字中包含'张'的所有学生： 
+```
+GET /api/v1/students?stuName=张&gpa=3
+```
+
+查询gpa大于3.0的学生，按照gpa降序排列(gpa相同的学生按照学号排序), 取第40～49名学生。
+```
+GET /api/v1/students?gpa=3&startPage=5&pageSize=10&orderBy=gpa desc, stuNo     
+```    
+ 
+NOTE： 如果参数不正确，会自动使用缺省的参数，而不会报错。
+
 
 #### HTTP Response
 * Status code:  200 (成功)
